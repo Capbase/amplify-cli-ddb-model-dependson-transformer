@@ -9,5 +9,6 @@
   "dependencies": {
     "graphql-transformer-core": "^6.13.1"
   },
+  "repository": "git@github.com:Capbase/amplify-cli-ddb-model-dependson-transformer.git",
   "publishConfig": { "registry": "https://npm.pkg.github.com/" }
 }
