@@ -8,5 +8,6 @@
   "private": false,
   "dependencies": {
     "graphql-transformer-core": "^6.13.1"
-  }
+  },
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
 }
