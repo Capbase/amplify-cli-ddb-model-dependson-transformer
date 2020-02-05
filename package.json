@@ -1,5 +1,5 @@
 {
-  "name": "@capbase/ddb-model-dependson-transformer",
+  "name": "@capbase/amplify-cli-ddb-model-dependson-transformer",
   "version": "1.0.0",
   "description": "Adds DependsOn properties to table definitions in order to prevent concurrent creation limitations",
   "main": "index.js",
