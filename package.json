@@ -1,0 +1,12 @@
+{
+  "name": "ddb-model-dependson-transformer",
+  "version": "1.0.0",
+  "description": "Adds DependsOn properties to table definitions in order to prevent concurrent creation limitations",
+  "main": "index.js",
+  "author": "James Donaghue <james.donaghue@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "graphql-transformer-core": "^6.13.1"
+  }
+}
