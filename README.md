@@ -1,2 +1,2 @@
-# amplify-cli-ddb-model-dependson-transformer
-Adds DependsOn properties to table definitions in order to prevent concurrent creation limitations
+# amplify-cli-ddb-model-dependencies-transformer
+Adds dependencies to table definitions in order to prevent concurrent creation limitations

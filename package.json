@@ -1,14 +1,17 @@
 {
   "name": "@capbase/amplify-cli-ddb-model-dependson-transformer",
-  "version": "1.0.0",
-  "description": "Adds DependsOn properties to table definitions in order to prevent concurrent creation limitations",
+  "version": "1.0.1",
+  "description": "Adds dependencies to table definitions in order to prevent concurrent creation limits from kicking in",
   "main": "index.js",
   "author": "James Donaghue <james.donaghue@gmail.com>",
   "license": "MIT",
   "private": false,
   "dependencies": {
+    "@aws-amplify/cli": "^4.13.2",
     "graphql-transformer-core": "^6.13.1"
   },
   "repository": "git@github.com:Capbase/amplify-cli-ddb-model-dependson-transformer.git",
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/capbase"
+  }
 }
