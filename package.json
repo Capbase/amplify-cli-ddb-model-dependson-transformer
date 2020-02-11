@@ -1,7 +1,7 @@
 {
   "name": "@capbase/amplify-cli-ddb-model-dependson-transformer",
   "version": "1.0.1",
-  "description": "Adds dependencies to table definitions in order to prevent concurrent creation limits from kicking in",
+  "description": "Adds dependencies to DynamoDB table definitions in order to prevent concurrent creation limits from kicking in",
   "main": "index.js",
   "author": "James Donaghue <james.donaghue@gmail.com>",
   "license": "MIT",
@@ -12,6 +12,6 @@
   },
   "repository": "git@github.com:Capbase/amplify-cli-ddb-model-dependson-transformer.git",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/capbase"
+    "registry": "https://npm.pkg.github.com/"
   }
 }

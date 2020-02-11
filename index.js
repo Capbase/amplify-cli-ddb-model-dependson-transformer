@@ -59,12 +59,12 @@ const loadConfig = () => {
     const config = JSON.parse(serializedConfig.toString());
     return config;
   } catch (err) {
-    console.log(`WARNING: AmplifyCliDynamoDBModelDependenciesTransformer could not read transform configuration at ${configPath}`);
+    console.log(`WARNING: AmplifyCliDynamoDBModelDependenciesTransformer could not read the transform configuration at ${configPath}`);
   }
 }
 
 /**
- * A comparator used for sorting a flat collection of
+ * Produces a comparator function used for sorting a flat collection of
  * resource data objects
  */
 const comparatorFactory = (stackMapping) => {
@@ -98,7 +98,8 @@ const injectDependsOnDependency = (resource, dependencyResourceId) => {
 }
 
 /**
- * Injects the dependency tag reference into the resource properties
+ * Injects the dependency tag reference into the resource properties, which will
+ * get converted to an `Fn::ImportValue` intrinsic function downstream by the cli
  */
 const injectTagReferenceDependency = (stackMapping, resource, resourceId, dependencyResourceId) => {
   let stackId = stackMapping.get(resourceId);
@@ -115,7 +116,7 @@ const injectTagReferenceDependency = (stackMapping, resource, resourceId, depend
 }
 
 /**
- * Partitions a flat collection up into n partitions of m size
+ * Partitions a flat collection up into N partitions of size M
  */
 const partitionCollection = (collection, size = DDB_CREATION_CONCURRENCY_LIMIT) => {
   let worker = [];
@@ -141,13 +142,15 @@ const partitionCollection = (collection, size = DDB_CREATION_CONCURRENCY_LIMIT) 
 
 /**
  * A custom `amplify cli` transformer that creates dependencies across
- * table definitions to allow only 10 at a time to concurrently create
- * which is the current aws limit.
+ * table definitions to allow at most 10 at a time to concurrently create
+ * which is the current aws limit. This handles migrated resources as well
+ * which are hoisted int to the root stack
  */
 class AmplifyCliDynamoDBModelDependenciesTransformer extends Transformer {
   /**
-   * There isn't really a directive associated with this transformer,
-   * but `Transformer` needs at least a dummy one passed in for proper
+   * There isn't really a directive associated with this transformer because
+   * it just scans all transformed resources to find table definitions,
+   * but `Transformer` needs at least a dummy directive passed in for proper
    * initialization.
    */
   constructor() {
@@ -158,8 +161,8 @@ class AmplifyCliDynamoDBModelDependenciesTransformer extends Transformer {
   }
 
   /**
-   * Required by `Transformer` class to have a definition here because of where we
-   * arbitrarily chose to bind our directive in the schema just above, so we just
+   * Required by the `Transformer` class to have a definition here because of where we
+   * arbitrarily chose to bind our directive in the schema just above. So we just
    * define this as a noop
    */
   object = (def, directive, ctx) => {/* noop */}
@@ -168,14 +171,13 @@ class AmplifyCliDynamoDBModelDependenciesTransformer extends Transformer {
    * After the `TransformationContext` is fully built up, go through each table definition
    * and add properties importing some other table definitions into the stack with the goal of
    * reducing the overall number of concurrent table creations so that the concurrent creation
-   * limit of ddb tables is not reached.
+   * limit of ddb tables in AWS is not reached.
    */
   after = (ctx) => {
     const template = ctx.template;
 
-    // Grab migration resource info from `transform.conf.json` which unfortunately is not
-    // directly available in the transformers
-    debugger;
+    // Grab the migration resource info (if it exists) from `transform.conf.json`
+    // which unfortunately is not directly available in the transformers
     const transformConfig = loadConfig();
     const stackMappingIncludingHoisted = new Map(ctx.getStackMapping());
     if (
@@ -222,8 +224,12 @@ class AmplifyCliDynamoDBModelDependenciesTransformer extends Transformer {
     /**
      * Rules for adding nested stack dependencies:
      * 1.) We don't want any from the first partition to depend on any other tables
-     * 2.) Each table in the partitions after the first should depend on the resource
-     *     at the same position within the previous partition.
+     *     because they are going to run first (or second depending on if any were
+     *     hoisted just above, NOTE: this section does not process hoisted tables, that has
+     *     already been done just above)
+     * 2.) Each table in the partitions collection, except for the first partition, should
+     *     depend on the table esource located at the same position but within the previous
+     *     partition (this part considers the first partition)
      */
     partitioned.slice(1).forEach((partition, i) => {
       partition.forEach(({ resourceId, resource }, j) => {
