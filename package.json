@@ -10,7 +10,7 @@
     "@aws-amplify/cli": "^4.13.2",
     "graphql-transformer-core": "^6.13.1"
   },
-  "repository": "git@github.com:Capbase/amplify-cli-ddb-model-dependson-transformer.git",
+  "repository": "git://github.com/Capbase/amplify-cli-ddb-model-dependson-transformer.git",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
   }
